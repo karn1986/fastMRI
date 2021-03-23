@@ -18,3 +18,8 @@ dataset_cache.pkl
 .mypy_cache/
 lightning_logs/
 *.pt
+*.h5
+*.ipynb
+*.ipynb
+*.yaml
+*.ipynb
