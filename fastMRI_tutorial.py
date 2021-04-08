@@ -21,7 +21,7 @@ from matplotlib import pyplot as plt
 # In[3]:
 
 
-file_name = 'singlecoil_train/file1000075.h5'
+file_name = 'singlecoil_train/file1000012.h5'
 hf = h5py.File(file_name)
 
 
@@ -89,7 +89,9 @@ slice_kspace2 = T.to_tensor(slice_kspace)      # Convert from numpy array to pyt
 slice_image = fastmri.ifft2c(slice_kspace2)           # Apply Inverse Fourier Transform to get the complex image
 slice_image_abs = fastmri.complex_abs(slice_image)   # Compute absolute value to get a real image
 
-
+# SSIM loss
+loss = fastmri.SSIMLoss()
+print(loss(slice_image_abs.unsqueeze(1), slice_image_abs.unsqueeze(1), data_range=slice_image_abs.max().reshape(-1)))
 # In[15]:
 
 

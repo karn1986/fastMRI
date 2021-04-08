@@ -240,7 +240,7 @@ class SliceDataset(torch.utils.data.Dataset):
             )
 
         self.dataset_cache_file = Path(dataset_cache_file)
-
+        self.challenge = challenge
         self.transform = transform
         self.recons_key = (
             "reconstruction_esc" if challenge == "singlecoil" else "reconstruction_rss"
@@ -344,7 +344,8 @@ class SliceDataset(torch.utils.data.Dataset):
 
         with h5py.File(fname, "r") as hf:
             kspace = hf["kspace"][dataslice]
-
+            if self.challenge == "singlecoil":
+                kspace = kspace[np.newaxis,:,:]
             mask = np.asarray(hf["mask"]) if "mask" in hf else None
 
             target = hf[self.recons_key][dataslice] if self.recons_key in hf else None
