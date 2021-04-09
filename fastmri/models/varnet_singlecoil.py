@@ -53,20 +53,19 @@ class NormUnet(nn.Module):
         )
 
     def complex_to_chan_dim(self, x: torch.Tensor) -> torch.Tensor:
-        b, c, h, w, two = x.shape
+        b, h, w, two = x.shape
         assert two == 2
-        return x.permute(0, 4, 1, 2, 3).reshape(b, 2 * c, h, w)
+        return x.permute(0, 3, 1, 2)
 
     def chan_complex_to_last_dim(self, x: torch.Tensor) -> torch.Tensor:
-        b, c2, h, w = x.shape
-        assert c2 % 2 == 0
-        c = c2 // 2
-        return x.view(b, 2, c, h, w).permute(0, 2, 3, 4, 1).contiguous()
+        b, two, h, w = x.shape
+        assert two == 2
+        return x.permute(0, 2, 3, 1).contiguous()
 
     def norm(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         # group norm
         b, c, h, w = x.shape
-        x = x.view(b, 2, c // 2 * h * w)
+        x = x.view(b, c, h * w)
 
         mean = x.mean(dim=2).view(b, c, 1, 1)
         std = x.std(dim=2).view(b, c, 1, 1)
@@ -189,7 +188,7 @@ class VarNetBlock(nn.Module):
         ref_kspace: torch.Tensor,
         mask: torch.Tensor,
     ) -> torch.Tensor:
-        zero = torch.zeros(1, 1, 1, 1, 1).to(current_kspace)
+        zero = torch.zeros(1, 1, 1, 1).to(current_kspace)
         soft_dc = torch.where(mask, current_kspace - ref_kspace, zero) * self.dc_weight
         model_term = fastmri.fft2c(self.model(fastmri.ifft2c(current_kspace)))
 

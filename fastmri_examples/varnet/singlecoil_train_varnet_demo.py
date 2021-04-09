@@ -125,7 +125,7 @@ def build_args():
     parser = FastMriDataModule.add_data_specific_args(parser)
     parser.set_defaults(
         data_path=data_path,  # path to fastMRI data
-        mask_type="equispaced",  # VarNet uses equispaced mask
+        # mask_type="equispaced",  # VarNet uses equispaced mask
         challenge="singlecoil",  # only multicoil implemented for VarNet
         batch_size=batch_size,  # number of samples per batch
         test_path=None,  # path for test split, overwrites data_path
@@ -138,8 +138,8 @@ def build_args():
         num_cascades=4,  # number of unrolled iterations
         pools=2,  # number of pooling layers for U-Net
         chans=6,  # number of top-level channels for U-Net
-        lr=0.01,  # Adam learning rate
-        lr_step_size=10,  # epoch at which to decrease learning rate
+        lr=0.005,  # Adam learning rate
+        lr_step_size=5,  # epoch at which to decrease learning rate
         lr_gamma=0.1,  # extent to which to decrease learning rate
         weight_decay=0.0,  # weight regularization strength
     )
@@ -153,7 +153,7 @@ def build_args():
         seed=42,  # random seed
         deterministic=True,  # makes things slower, but deterministic
         default_root_dir=default_root_dir,  # directory for logs and checkpoints
-        max_epochs=50,  # max number of epochs
+        max_epochs=10,  # max number of epochs
     )
 
     args = parser.parse_args()

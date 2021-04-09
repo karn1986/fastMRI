@@ -75,8 +75,8 @@ def apply_mask(
     shape[:-3] = 1
     mask = mask_func(shape, seed)
     if padding is not None:
-        mask[:, :, : padding[0]] = 0
-        mask[:, :, padding[1] :] = 0  # padding value inclusive on right of zeros
+        mask[..., : padding[0], 0] = 0
+        mask[..., padding[1] :, 0] = 0  # padding value inclusive on right of zeros
 
     masked_data = data * mask + 0.0  # the + 0.0 removes the sign of the zeros
 
@@ -95,7 +95,7 @@ def mask_center(x: torch.Tensor, mask_from: int, mask_to: int) -> torch.Tensor:
         A mask with the center filled.
     """
     mask = torch.zeros_like(x)
-    mask[:, :, :, mask_from:mask_to] = x[:, :, :, mask_from:mask_to]
+    mask[..., mask_from:mask_to, 0] = x[..., mask_from:mask_to, 0]
 
     return mask
 
@@ -398,8 +398,8 @@ class VarNetDataTransform:
             mask_shape[-2] = num_cols
             mask = torch.from_numpy(mask.reshape(*mask_shape).astype(np.float32))
             mask = mask.reshape(*mask_shape)
-            mask[:, :, :acq_start] = 0
-            mask[:, :, acq_end:] = 0
+            mask[..., :acq_start, 0] = 0
+            mask[..., acq_end:, 0] = 0
 
         return (
             masked_kspace,
