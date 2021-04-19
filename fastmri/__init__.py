@@ -9,7 +9,7 @@ from packaging import version
 
 from .coil_combine import rss, rss_complex
 from .fftc import fftshift, ifftshift, roll
-from .losses import SSIMLoss
+from .losses import SSIMLoss, TotalVariationLoss
 from .math import (
     complex_abs,
     complex_abs_sq,

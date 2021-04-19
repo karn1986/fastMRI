@@ -124,7 +124,7 @@ class NormUnet(nn.Module):
         return x
 
 
-class VarNet(nn.Module):
+class ssVarNet(nn.Module):
     """
     A full variational network model.
 
@@ -158,7 +158,7 @@ class VarNet(nn.Module):
         for cascade in self.cascades:
             kspace_pred = cascade(kspace_pred, masked_kspace, mask)
 
-        return fastmri.complex_abs(fastmri.ifft2c(kspace_pred))
+        return kspace_pred
 
 
 class VarNetBlock(nn.Module):

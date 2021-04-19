@@ -10,3 +10,4 @@ from .unet_module import UnetModule
 #from .varnet_module import VarNetModule
 from .singlecoil_varnet_module import VarNetModule
 from .data_module import FastMriDataModule
+from .selfsupervised_singlecoil_varnet_module import SSVarNetModule

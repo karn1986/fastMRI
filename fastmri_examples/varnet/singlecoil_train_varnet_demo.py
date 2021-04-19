@@ -13,7 +13,8 @@ import pytorch_lightning as pl
 from fastmri.data.mri_data import fetch_dir
 from fastmri.data.subsample import create_mask_for_mask_type
 from fastmri.data.transforms import VarNetDataTransform
-from fastmri.pl_modules import FastMriDataModule, VarNetModule
+from fastmri.pl_modules import FastMriDataModule
+from fastmri.pl_modules import SSVarNetModule as VarNetModule
 
 
 def cli_main(args):
@@ -79,7 +80,7 @@ def build_args():
 
     # basic args
     path_config = pathlib.Path("../../fastmri_dirs.yaml")
-    backend = None# "dp"
+    backend = "dp"
     num_gpus = 2 if backend == "ddp" else 1
     if backend is None:
         num_gpus = None
@@ -129,18 +130,18 @@ def build_args():
         challenge="singlecoil",  # only multicoil implemented for VarNet
         batch_size=batch_size,  # number of samples per batch
         test_path=None,  # path for test split, overwrites data_path
-        sample_rate = 0.1, # sampling a subset of the dataset for rapid prototyping
+        sample_rate = 0.3, # sampling a subset of the dataset for rapid prototyping
     )
 
     # module config
     parser = VarNetModule.add_model_specific_args(parser)
     parser.set_defaults(
-        num_cascades=4,  # number of unrolled iterations
-        pools=2,  # number of pooling layers for U-Net
-        chans=6,  # number of top-level channels for U-Net
-        lr=0.005,  # Adam learning rate
-        lr_step_size=5,  # epoch at which to decrease learning rate
-        lr_gamma=0.1,  # extent to which to decrease learning rate
+        num_cascades=6,  # number of unrolled iterations
+        pools=3,  # number of pooling layers for U-Net
+        chans=8,  # number of top-level channels for U-Net
+        lr=0.01,  # Adam learning rate
+        lr_step_size=2,  # epoch at which to decrease learning rate
+        lr_gamma=0.5,  # extent to which to decrease learning rate
         weight_decay=0.0,  # weight regularization strength
     )
 
@@ -173,10 +174,10 @@ def build_args():
     )
 
     # set default checkpoint if one exists in our checkpoint directory
-    if args.resume_from_checkpoint is None:
-        ckpt_list = sorted(checkpoint_dir.glob("*.ckpt"), key=os.path.getmtime)
-        if ckpt_list:
-            args.resume_from_checkpoint = str(ckpt_list[-1])
+    # if args.resume_from_checkpoint is None:
+    #     ckpt_list = sorted(checkpoint_dir.glob("*.ckpt"), key=os.path.getmtime)
+    #     if ckpt_list:
+    #         args.resume_from_checkpoint = str(ckpt_list[-1])
 
     return args
 
