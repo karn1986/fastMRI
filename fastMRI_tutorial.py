@@ -139,7 +139,7 @@ sampled_image_abs = fastmri.complex_abs(sampled_image)   # Compute absolute valu
 sampled_image_rss = fastmri.rss(sampled_image_abs, dim=0)
 show_coils(sampled_image_abs, [0], cmap='gray')
 
-ckpt_path = "fastmri_examples/varnet/varnet/varnet_demo/checkpoints/epoch=4-step=52114.ckpt"
+ckpt_path = "fastmri_examples/varnet/varnet/varnet_demo/checkpoints/epoch=6-step=72960.ckpt"
 from fastmri.pl_modules import SSVarNetModule as VarNetModule
 model = VarNetModule.load_from_checkpoint(ckpt_path)
 kspace_pred = model(masked_kspace, mask.byte())
@@ -216,7 +216,7 @@ ax1.legend()
 ax2.legend()
 #%% Compare manual histogram calculation with torch.histc
 gt  = sampled_image_abs
-bins = 10
+bins = 100
 hdiff_pred = (output[:,:,:-1] - output[:,:,1:]).view(-1)
 hdiff_gt   = (gt[:,:,:-1] - gt[:,:,1:]).view(-1)
 hmin_pred, hmax_pred = hdiff_pred.min(), hdiff_pred.max()

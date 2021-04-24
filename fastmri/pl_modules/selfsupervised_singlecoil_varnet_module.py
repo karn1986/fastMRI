@@ -71,7 +71,7 @@ class SSVarNetModule(MriModule):
             pools=self.pools,
         )
 
-        self.loss = fastmri.TotalVariationLoss()
+        self.loss = fastmri.SelfSupervisedLoss()
 
     def forward(self, masked_kspace, mask):
         return self.varnet(masked_kspace, mask)
@@ -81,7 +81,7 @@ class SSVarNetModule(MriModule):
 
         kspace_pred = self(masked_kspace, mask)
         # target, output = transforms.center_crop_to_smallest(target, output)
-        loss = self.loss(kspace_pred, masked_kspace, mask)
+        loss = self.loss(kspace_pred, masked_kspace)
 
         self.log("train_loss", loss)
 
@@ -101,7 +101,7 @@ class SSVarNetModule(MriModule):
             "max_value": max_value,
             "output": output,
             "target": target,
-            "val_loss": self.loss(kspace_pred, masked_kspace, mask),
+            "val_loss": self.loss(kspace_pred, masked_kspace),
         }
 
     def test_step(self, batch, batch_idx):

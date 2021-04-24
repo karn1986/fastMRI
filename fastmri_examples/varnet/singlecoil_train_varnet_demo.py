@@ -141,7 +141,7 @@ def build_args():
         chans=8,  # number of top-level channels for U-Net
         lr=0.01,  # Adam learning rate
         lr_step_size=2,  # epoch at which to decrease learning rate
-        lr_gamma=0.5,  # extent to which to decrease learning rate
+        lr_gamma=0.25,  # extent to which to decrease learning rate
         weight_decay=0.0,  # weight regularization strength
     )
 
